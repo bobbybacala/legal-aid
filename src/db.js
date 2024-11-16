@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import 'dotenv/config'
 
 // function to connect to mongo db
 async function connectDB() {
@@ -10,14 +11,14 @@ async function connectDB() {
 
     // the connection string
     // const MONGO_URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.rmf4y1k.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
-    const MONGO_URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.iwtq4.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`
+    const MONGO_URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.iwtq4.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
 
     // connect in a try and catch block
     try {
         await mongoose.connect(MONGO_URI, {
             // Replace 'mydatabase' with your actual database name
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+            // useNewUrlParser: true,
+            // useUnifiedTopology: true,
         });
         console.log('Connected to MongoDB');
     } catch (error) {
