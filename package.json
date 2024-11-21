@@ -17,6 +17,7 @@
     "formidable": "^3.5.2",
     "formidable-serverless": "^1.1.1",
     "is_contract_legal": "file:",
+    "lucide-react": "^0.460.0",
     "mongoose": "^8.8.1",
     "next": "15.0.3",
     "openai": "^4.72.0",

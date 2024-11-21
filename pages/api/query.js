@@ -6,6 +6,18 @@ import { getCompletion, getEmbeddings } from "@/src/geminiServices";
 import { connectDB, disconnectDB } from "@/src/db";
 import MyFileModel from "@/src/models/myfile";
 
+// Helper function to clean special characters from text
+function cleanResponse(text) {
+    if (!text) return text;
+
+    // Remove asterisks, bullets, and other common special characters
+    // Add or remove characters from this regex based on your needs
+    return text
+        .replace(/[*•\-_~`'"]+/g, '')  // Remove specific special characters
+        .replace(/\s+/g, ' ')          // Replace multiple spaces with single space
+        .trim();                       // Remove leading/trailing whitespace
+}
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
@@ -51,7 +63,10 @@ export default async function handler(req, res) {
         const prompt = `${promptStart}${contexts}${promptEnd}`;
 
         // Generate response using OpenAI
-        const response = await getCompletion(prompt);
+        let response = await getCompletion(prompt);
+
+        // clean the response, if special characters are there before sending the response
+        response = cleanResponse(response)
 
         return res.status(200).json({ response });
     } catch (error) {

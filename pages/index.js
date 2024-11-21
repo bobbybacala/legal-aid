@@ -17,7 +17,7 @@ export default function Home() {
 	return (
 		<>
 			<Head>
-				<title>Paperbot - Chat with my PDF</title>
+				<title>Legal Aid - Get Legal Help</title>
 			</Head>
 			<main
 				className={`w-full h-screen`}

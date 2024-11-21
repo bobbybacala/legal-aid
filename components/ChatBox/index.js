@@ -8,9 +8,9 @@ import FileNotProcessedAlert from "@/components/ChatBox/FileNotProcessedAlert";
 
 export default function ChatBox({ activeFile }) {
     const divRef = useRef(null);
-    const [chat, setChat] = useState([])
-    const [query, setQuery] = useState()
-    const [id, setId] = useState()
+    const [chat, setChat] = useState([]);
+    const [query, setQuery] = useState();
+    const [id, setId] = useState();
 
     const scrollToBottom = () => {
         if (divRef.current) {
@@ -19,18 +19,18 @@ export default function ChatBox({ activeFile }) {
     }
 
     useEffect(() => {
-        scrollToBottom()
-        console.log('msg added')
+        scrollToBottom();
+        console.log('msg added');
     }, [chat.length]);
 
     const addChat = (query, response, id) => {
         setChat(prevState => [...prevState, {
             query,
             response,
-        }])
+        }]);
 
-        setQuery(query)
-        setId(id)
+        setQuery(query);
+        setId(id);
     }
 
     const handleSubmit = async (e) => {
@@ -45,13 +45,13 @@ export default function ChatBox({ activeFile }) {
     }
 
     const updateLastChat = (query, response) => {
-        console.log("--old chat--", chat)
-        const oldChats = [...chat]
-        oldChats.pop()
+        console.log("--old chat--", chat);
+        const oldChats = [...chat];
+        oldChats.pop();
         setChat([...oldChats, {
             query,
             response,
-        }])
+        }]);
     }
 
     useEffect(() => {
@@ -69,7 +69,7 @@ export default function ChatBox({ activeFile }) {
                 updateLastChat(query, response.response);
             } else {
                 response = await response.json();
-                toast.error(response.message)
+                toast.error(response.message);
             }
         };
 
@@ -77,7 +77,6 @@ export default function ChatBox({ activeFile }) {
             fetchChatResponse().then(() => console.log('response received'));
         }
     }, [query]);
-
 
     return (
         <div className={"border h-full flex flex-col"}>
@@ -90,14 +89,12 @@ export default function ChatBox({ activeFile }) {
                         ? <FileNotProcessedAlert id={activeFile._id} />
                         : chat.length > 0
                             ? <div ref={divRef} className={"overflow-auto"}>
-                                {
-                                    chat.map(({ query, response }, index) => (
-                                        <Chat key={index} query={query} response={response} />
-                                    ))
-                                }
+                                {chat.map(({ query, response }, index) => (
+                                    <Chat key={index} query={query} response={response} />
+                                ))}
                                 <div ref={divRef} />
                             </div>
-                            : <ReadyAlert />
+                            : <ReadyAlert fileId={activeFile._id} />
                     : <ChooseFileAlert />
                 }
             </div>
@@ -114,5 +111,5 @@ export default function ChatBox({ activeFile }) {
                 </div>
             </form>
         </div>
-    )
+    );
 }

@@ -12,7 +12,7 @@ import pc from "@/src/pinecone";
 function splitIntoClauses(text) {
 
     // Regular expression to identify clause headings
-    const clausePattern = /\n?\d+\.\s|\n?[a-zA-Z]\)\s|\n?[A-Za-z]+\. /;
+    const clausePattern = /(?=\n[A-Z ]+\s*-\s*\n)|(?=\n?\d+\.\s)|(?=\n?[a-zA-Z]\)\s)/
 
     // Split the text based on the pattern and trim whitespace
     return text.split(clausePattern).map(clause => clause.trim()).filter(clause => clause.length > 0);

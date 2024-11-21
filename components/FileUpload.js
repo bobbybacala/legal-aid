@@ -87,7 +87,7 @@ export default function FileUpload() {
                     htmlFor="formFile"
                     className="block text-sm font-medium text-neutral-700 dark:text-neutral-600"
                 >
-                    Upload a PDF File
+                    Upload a Legal Document PDF File
                 </label>
                 
                 <div className="relative">
