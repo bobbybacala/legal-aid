@@ -1,6 +1,6 @@
 # Legal Document Compliance Checking System
 
-A system focused on legal contracts, where you can:
+A Full Stack system focused on legal contracts, where you can:
 
 - **Upload your legal document**: Receive a detailed compliance report evaluating whether the clauses in your legal contract meet legal standards.
 - **Ask your doubts**: Query specific clauses or details from the legal contract for further insights.
