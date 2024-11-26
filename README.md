@@ -1,4 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Legal Document Compliance Checking System
+
+A system focused on legal contracts, where you can:
+
+- **Upload your legal document**: Receive a detailed compliance report evaluating whether the clauses in your legal contract meet legal standards.
+- **Ask your doubts**: Query specific clauses or details from the legal contract for further insights.
+
+## Prerequisites
+
+To run this project successfully, ensure you have the following:
+
+1. **Amazon S3 Bucket**  
+   Create an S3 bucket on [Amazon AWS](https://aws.amazon.com) to store uploaded PDFs.
+
+2. **Pinecone Account**  
+   Sign up for a Pinecone account to store embeddings of the legal clauses.
+
+3. **MongoDB Cluster**  
+   Set up a cluster on [MongoDB Atlas](https://www.mongodb.com/atlas) to store the names of the uploaded contract files.
+
+4. **Google Cloud Project**  
+   Create a Google Cloud project and enable the Gemini API. Generate API keys for:  
+   - Embedding Model  
+   - Completion Model  
+
+   Use the Free tier of the Gemini API for embedding and completion services.
+
+---
 
 ## Getting Started
 
@@ -12,6 +39,7 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -22,19 +50,4 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
