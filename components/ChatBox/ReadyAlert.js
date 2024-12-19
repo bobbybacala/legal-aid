@@ -15,7 +15,7 @@ const ComplianceResultCard = ({ result }) => {
 	const getBgColor = (analysis) => {
 		if (analysis.toLowerCase().includes('compliant')) return 'bg-green-50';
 		if (analysis.toLowerCase().includes('risky')) return 'bg-yellow-50';
-		if (analysis.toLowerCase().includes('non compliant')) return 'bg-red-50';
+		if (analysis.toLowerCase().includes('noncompliant')) return 'bg-red-50';
 		return 'bg-gray-50';
 	};
 

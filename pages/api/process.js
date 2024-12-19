@@ -9,15 +9,57 @@ import pc from "@/src/pinecone";
 // PDFJS.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS.version}/pdf.worker.min.js`;
 
 // Helper function to split text into clauses
+// function splitIntoClauses(text) {
+
+//     // Regular expression to identify clause headings
+//     const clausePattern = /(?=\n[A-Z ]+\s*-\s*\n)|(?=\n?\d+\.\s)|(?=\n?[a-zA-Z]\)\s)/
+
+//     // Split the text based on the pattern and trim whitespace
+//     return text.split(clausePattern).map(clause => clause.trim()).filter(clause => clause.length > 0);
+// }
+
 function splitIntoClauses(text) {
+    // First, normalize line endings, spaces and remove extra whitespace
+    const normalizedText = text
+        .replace(/\r\n/g, '\n')
+        .replace(/\n\s*\n/g, '\n')
+        .replace(/\s+/g, ' ')  // Normalize multiple spaces to single space
+        .trim();
 
-    // Regular expression to identify clause headings
-    const clausePattern = /(?=\n[A-Z ]+\s*-\s*\n)|(?=\n?\d+\.\s)|(?=\n?[a-zA-Z]\)\s)/
+    // Pattern to match numbered clauses (1., 2., etc.)
+    const mainClausePattern = /(?:^|\s)(\d+\.\s*[A-Za-z])/g;
 
-    // Split the text based on the pattern and trim whitespace
-    return text.split(clausePattern).map(clause => clause.trim()).filter(clause => clause.length > 0);
+    // Find all clause starting positions
+    const matches = [...normalizedText.matchAll(mainClausePattern)];
+    
+    if (matches.length === 0) {
+        return [];
+    }
+
+    // Split text into clauses
+    const clauses = matches.map((match, index) => {
+        const startPos = match.index;
+        const endPos = index < matches.length - 1 ? matches[index + 1].index : normalizedText.length;
+        
+        // Extract the clause text
+        let clauseText = normalizedText.slice(startPos, endPos).trim();
+        
+        // Clean up the clause text
+        clauseText = clauseText
+            .replace(/\s+/g, ' ')           // Normalize spaces
+            .replace(/\s+([.,)])/g, '$1')   // Remove spaces before punctuation
+            .replace(/\(\s+/g, '(')         // Remove spaces after opening parentheses
+            .replace(/\s+\)/g, ')')         // Remove spaces before closing parentheses
+            .trim();
+        
+        return clauseText;
+    });
+
+    return clauses.filter(clause => {
+        // Remove any empty clauses or clauses that are just numbers
+        return clause.length > 0 && !/^\d+$/.test(clause);
+    });
 }
-
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -65,8 +107,12 @@ export default async function handler(req, res) {
             fullText += ' ' + text;
         }
 
+        console.log(fullText)
+
         // Split full text into clauses
         const clauses = splitIntoClauses(fullText);
+
+        console.log(clauses)
 
         // Generate embeddings for each clause
         for (let i = 0; i < clauses.length; i++) {

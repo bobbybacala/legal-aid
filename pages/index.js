@@ -22,11 +22,11 @@ export default function Home() {
 			<main
 				className={`w-full h-screen`}
 			>
-				<div className={"max-w-7xl mx-auto"}>
+				<div className={"max-w-screen-xl mx-auto"}>
 					<h1
 						className={"inline-block text-transparent px-5 lg:px-0 bg-clip-text py-4 text-3xl font-bold bg-gradient-to-r from-[#108dc7] to-[#ef8e38] font-squarePeg"}
 					>
-						Legal Aid
+						Legal Ai-d
 					</h1>
 					<div className={"mt-5 px-5 lg:px-0 h-[calc(100vh-170px)] min-h-[calc(100vh-170px)]"}>
 						<div className={"grid lg:grid-cols-[3fr_5fr] gap-8 h-[inherit]"}>

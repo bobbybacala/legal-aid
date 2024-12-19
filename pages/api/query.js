@@ -62,7 +62,7 @@ export default async function handler(req, res) {
         const promptEnd = `\n\nQuestion: ${query}\n\nAnswer:`;
         const prompt = `${promptStart}${contexts}${promptEnd}`;
 
-        // Generate response using OpenAI
+        // Generate response using Gemini
         let response = await getCompletion(prompt);
 
         // clean the response, if special characters are there before sending the response
