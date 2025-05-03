@@ -68,7 +68,7 @@ export default async function handler(req, res) {
             response = cleanResponse(response);
 
             complianceResults.push({
-                clauseNumber: clause.metadata.clauseNumber,
+                clauseNumber: clause.metadata.clauseNum,
                 text: cleanResponse(clause.metadata.text),  // Clean the clause text as well
                 analysis: response
             });
