@@ -6,7 +6,7 @@ import ReadyAlert from "@/components/ChatBox/ReadyAlert";
 import Chat from "@/components/ChatBox/Chat";
 import FileNotProcessedAlert from "@/components/ChatBox/FileNotProcessedAlert";
 
-export default function ChatBox({ activeFile }) {
+export default function ChatBox({ activeFile, fileType }) {
     const divRef = useRef(null);
     const [chat, setChat] = useState([]);
     const [query, setQuery] = useState();
@@ -94,7 +94,7 @@ export default function ChatBox({ activeFile }) {
                                 ))}
                                 <div ref={divRef} />
                             </div>
-                            : <ReadyAlert fileId={activeFile._id} />
+                            : <ReadyAlert fileId={activeFile._id} fileType={fileType} />
                     : <ChooseFileAlert />
                 }
             </div>

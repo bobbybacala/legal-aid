@@ -1,9 +1,16 @@
 import { useState } from 'react';
 import toast from "react-hot-toast";
 
-export default function FileUpload() {
+export default function FileUpload({ onFileTypeChange }) {
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
+    const [fileType, setFileType] = useState('contract'); // Default to 'contract'
+    const [legalCaseMetadata, setLegalCaseMetadata] = useState({
+        caseTitle: '',
+        judge: '',
+        date: '',
+        caseType: '',
+    });
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -24,10 +31,29 @@ export default function FileUpload() {
         }
     };
 
+    const handleFileTypeChange = (e) => {
+        setFileType(e.target.value);
+        onFileTypeChange(e.target.value); // Notify parent component of file type change
+    }
+
+    const handleMetadataChange = (e) => {
+        const {name, value} = e.target;
+        setLegalCaseMetadata((prev) => ({...prev, [name]: value}));
+    }
+
     const handleUploadClick = async () => {
         if (!file) {
             toast.error("Please select a file to upload");
             return;
+        }
+
+        if (fileType === 'legal_case') {
+            // check if all legal case metadata is filled
+            const { caseTitle, judge, date, caseType } = legalCaseMetadata;
+            if (!caseTitle || !judge || !date || !caseType) {
+                toast.error('Please fill all legal case metadata fields');
+                return;
+            }
         }
 
         setUploading(true);
@@ -42,6 +68,15 @@ export default function FileUpload() {
 
         // Append the file with 'file' as the field name to match backend expectation
         formData.append('file', file);
+        formData.append('fileType', fileType)
+
+        // if the fileType is legal_case, append the metadata
+        if (fileType === 'legal_case') {
+            Object.entries(legalCaseMetadata).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+        }
+
 
         try {
             // Log the FormData (note: FormData cannot be directly logged)
@@ -69,6 +104,12 @@ export default function FileUpload() {
             
             // Reset the form
             setFile(null);
+            setLegalCaseMetadata({
+                caseTitle: '',
+                judge: '',
+                date: '',
+                caseType: '',
+            });
             const fileInput = document.getElementById('formFile');
             if (fileInput) fileInput.value = '';
 
@@ -83,6 +124,68 @@ export default function FileUpload() {
     return (
         <div className="mb-3 p-4 bg-white rounded-lg shadow">
             <div className="space-y-4">
+
+                {/* File Type Selection */}
+                <div className="flex space-x-4">
+                    <label className='flex items-center gap-2'>
+                        <input
+                            type="radio"
+                            name="fileType"
+                            value="contract"
+                            checked={fileType === 'contract'}
+                            onChange={handleFileTypeChange}
+                        />
+                        Contracts
+                    </label>
+                    <label className='flex items-center gap-2'>
+                        <input
+                            type="radio"
+                            name="fileType"
+                            value="legal_case"
+                            checked={fileType === 'legal_case'}
+                            onChange={handleFileTypeChange}
+                        />
+                        Legal Cases
+                    </label>
+                </div>
+
+                {/* Metadata Form for Legal Cases */}
+                {fileType === 'legal_case' && (
+                    <div className="space-y-1">
+                        <input
+                            type="text"
+                            name="caseTitle"
+                            placeholder="Case Title"
+                            value={legalCaseMetadata.caseTitle}
+                            onChange={handleMetadataChange}
+                            className="w-full border rounded p-2 h-5"
+                        />
+                        <input
+                            type="text"
+                            name="judge"
+                            placeholder="Judge"
+                            value={legalCaseMetadata.judge}
+                            onChange={handleMetadataChange}
+                            className="w-full border rounded p-2 h-5"
+                        />
+                        <input
+                            type="date"
+                            name="date"
+                            value={legalCaseMetadata.date}
+                            onChange={handleMetadataChange}
+                            className="w-full border rounded p-2 h-5"
+                        />
+                        <input
+                            type="text"
+                            name="caseType"
+                            placeholder="Case Type (e.g., Civil, Criminal)"
+                            value={legalCaseMetadata.caseType}
+                            onChange={handleMetadataChange}
+                            className="w-full border rounded p-2 h-5"
+                        />
+                    </div>
+                )}
+
                 <label
                     htmlFor="formFile"
                     className="block text-sm font-medium text-neutral-700 dark:text-neutral-600"

@@ -2,13 +2,19 @@ import FileUpload from "@/components/FileUpload";
 import MyFiles from "@/components/Myfiles";
 import Intro from "@/components/Intro";
 import ChatBox from "@/components/ChatBox";
-import {useState} from "react";
+import Footer from "@/components/Footer";
+import { useState } from "react";
 import useMyFiles from "@/apiHooks/useMyFiles";
 import Head from 'next/head'
 
 export default function Home() {
 	const [activeFile, setActiveFile] = useState()
-	const {files, isError, isLoading} = useMyFiles()
+	const [fileType, setFileType] = useState('contract'); // Default to 'contract'
+	const { files, isError, isLoading } = useMyFiles()
+
+	const handleFileTypeChange = (type) => {
+		setFileType(type);
+	};
 
 	if (isLoading) {
 		return <h1>Loading...</h1>
@@ -31,17 +37,20 @@ export default function Home() {
 					<div className={"mt-5 px-5 lg:px-0 h-[calc(100vh-170px)] min-h-[calc(100vh-170px)]"}>
 						<div className={"grid lg:grid-cols-[3fr_5fr] gap-8 h-[inherit]"}>
 							<div>
-								<Intro/>
-								<FileUpload/>
-								<MyFiles setActiveFile={setActiveFile} files={files}/>
+								<Intro />
+								<FileUpload
+									onFileTypeChange={handleFileTypeChange}
+								/>
+								<MyFiles setActiveFile={setActiveFile} files={files} fileType={fileType} />
 							</div>
 							<div>
-								<ChatBox activeFile={activeFile}/>
+								<ChatBox activeFile={activeFile} fileType={fileType} />
 							</div>
 						</div>
 					</div>
 				</div>
 
+				<Footer/>
 			</main>
 		</>
 	)
