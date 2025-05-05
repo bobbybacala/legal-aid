@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import toast from "react-hot-toast";
+import LegalCaseDocMetaDataModal from './LegalCaseDocMetaDataModal';
+import { set } from 'mongoose';
 
 export default function FileUpload({ onFileTypeChange }) {
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [fileType, setFileType] = useState('contract'); // Default to 'contract'
+    const [isModalOpen, setIsModalOpen] = useState(false)   // state to control the modal for legal case metadata visibility
     const [legalCaseMetadata, setLegalCaseMetadata] = useState({
         caseTitle: '',
         judge: '',
@@ -47,6 +50,23 @@ export default function FileUpload({ onFileTypeChange }) {
             return;
         }
 
+        // if the fileType is legal_case, open the metadata modal
+        if (fileType === 'legal_case') {
+            setIsModalOpen(true);
+        } else {
+            uploadFile();
+        }
+    };
+
+    // function to handle metadata submission from the modal
+    const handleMetadataSubmit = async() => {
+        // close the modal and upload the file
+        setIsModalOpen(false);
+        await uploadFile();
+    }
+
+    // function to actually upload the file
+    const uploadFile = async () => {
         if (fileType === 'legal_case') {
             // check if all legal case metadata is filled
             const { caseTitle, judge, date, caseType } = legalCaseMetadata;
@@ -119,7 +139,7 @@ export default function FileUpload({ onFileTypeChange }) {
         } finally {
             setUploading(false);
         }
-    };
+    }
 
     return (
         <div className="mb-3 p-4 bg-white rounded-lg shadow">
@@ -148,43 +168,6 @@ export default function FileUpload({ onFileTypeChange }) {
                         Legal Cases
                     </label>
                 </div>
-
-                {/* Metadata Form for Legal Cases */}
-                {fileType === 'legal_case' && (
-                    <div className="space-y-1">
-                        <input
-                            type="text"
-                            name="caseTitle"
-                            placeholder="Case Title"
-                            value={legalCaseMetadata.caseTitle}
-                            onChange={handleMetadataChange}
-                            className="w-full border rounded p-2 h-5"
-                        />
-                        <input
-                            type="text"
-                            name="judge"
-                            placeholder="Judge"
-                            value={legalCaseMetadata.judge}
-                            onChange={handleMetadataChange}
-                            className="w-full border rounded p-2 h-5"
-                        />
-                        <input
-                            type="date"
-                            name="date"
-                            value={legalCaseMetadata.date}
-                            onChange={handleMetadataChange}
-                            className="w-full border rounded p-2 h-5"
-                        />
-                        <input
-                            type="text"
-                            name="caseType"
-                            placeholder="Case Type (e.g., Civil, Criminal)"
-                            value={legalCaseMetadata.caseType}
-                            onChange={handleMetadataChange}
-                            className="w-full border rounded p-2 h-5"
-                        />
-                    </div>
-                )}
 
                 <label
                     htmlFor="formFile"
@@ -236,6 +219,15 @@ export default function FileUpload({ onFileTypeChange }) {
                     </button>
                 </div>
             </div>
+
+            {/* render the meta data modal if it's open */}
+            <LegalCaseDocMetaDataModal
+                isOpen={isModalOpen}
+                onClose={() => {setIsModalOpen(false)}}
+                metaData={legalCaseMetadata}
+                onMetadataChange={handleMetadataChange}
+                onSubmit={handleMetadataSubmit}
+            />
         </div>
     );
 }

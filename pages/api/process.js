@@ -236,6 +236,8 @@ export default async function handler(req, res) {
                 });
             }
 
+            // log the parsed legal case for debugging
+            console.log('Parsed legal case:', legalCase_parsed);
             clauses_len = legalCase_parsed.clauses.length; // Set the clause count to the number of clauses found
         }
 
