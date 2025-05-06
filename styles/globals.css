@@ -1,3 +1,127 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary-color: #2563eb;
+  --secondary-color: #ef8e38;
+  --accent-color: #108dc7;
+  --background-light: #f9fafb;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --border-color: #e5e7eb;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --warning-color: #f59e0b;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background-light);
+  color: var(--text-primary);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.card {
+  @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300;
+}
+
+.card-hover {
+  @apply hover:shadow-md hover:border-gray-200;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.btn-secondary {
+  @apply bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-400;
+}
+
+.btn-outline {
+  @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-500;
+}
+
+.input {
+  @apply block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500;
+}
+
+.tag {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+}
+
+.tag-blue {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.tag-orange {
+  @apply bg-orange-100 text-orange-800;
+}
+
+.animated-gradient-text {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-orange-500 font-bold;
+}
+
+.subtle-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.subtle-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.subtle-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.subtle-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 20px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.skeleton {
+  @apply bg-gray-200 animate-pulse rounded;
+}
+
+/* Footer fixes */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+}
+
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Toast styling overrides */
+.toast-container {
+  @apply !font-sans;
+}

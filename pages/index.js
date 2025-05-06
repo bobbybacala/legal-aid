@@ -5,53 +5,77 @@ import ChatBox from "@/components/ChatBox";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import useMyFiles from "@/apiHooks/useMyFiles";
-import Head from 'next/head'
+import Head from "next/head";
+import { FaScaleBalanced } from "react-icons/fa6";
 
 export default function Home() {
-	const [activeFile, setActiveFile] = useState()
-	const [fileType, setFileType] = useState('contract'); // Default to 'contract'
-	const { files, isError, isLoading } = useMyFiles()
+  const [activeFile, setActiveFile] = useState();
+  const [fileType, setFileType] = useState("contract"); // Default to 'contract'
+  const { files, isError, isLoading } = useMyFiles();
 
-	const handleFileTypeChange = (type) => {
-		setFileType(type);
-	};
+  const handleFileTypeChange = (type) => {
+    setFileType(type);
+  };
 
-	if (isLoading) {
-		return <h1>Loading...</h1>
-	}
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Loading your legal documents...
+          </h2>
+        </div>
+      </div>
+    );
+  }
 
-	return (
-		<>
-			<Head>
-				<title>Legal Aid - Get Legal Help</title>
-			</Head>
-			<main
-				className={`w-full h-screen`}
-			>
-				<div className={"max-w-screen-xl mx-auto"}>
-					<h1
-						className={"inline-block text-transparent px-5 lg:px-0 bg-clip-text py-4 text-3xl font-bold bg-gradient-to-r from-[#108dc7] to-[#ef8e38] font-squarePeg"}
-					>
-						Legal Ai-d
-					</h1>
-					<div className={"mt-5 px-5 lg:px-0 h-[calc(100vh-170px)] min-h-[calc(100vh-170px)]"}>
-						<div className={"grid lg:grid-cols-[3fr_5fr] gap-8 h-[inherit]"}>
-							<div>
-								<Intro />
-								<FileUpload
-									onFileTypeChange={handleFileTypeChange}
-								/>
-								<MyFiles setActiveFile={setActiveFile} files={files} fileType={fileType} />
-							</div>
-							<div>
-								<ChatBox activeFile={activeFile} fileType={fileType} />
-							</div>
-						</div>
-					</div>
-				</div>
+  return (
+    <>
+      <Head>
+        <title>Legal Aid - AI-Powered Legal Document Assistant</title>
+        <meta
+          name="description"
+          content="Get AI-powered help with your legal documents and contracts"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
 
-				<Footer/>
-			</main>
-		</>
-	)
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="max-w-screen-xl mx-auto px-5 lg:px-0 py-4 flex items-center">
+            <FaScaleBalanced className="text-blue-600 mr-3 text-2xl" />
+            <h1 className="text-2xl md:text-3xl font-bold animated-gradient-text">
+              Legal Ai-d
+            </h1>
+          </div>
+        </header>
+
+        <main className="flex-1 max-w-screen-xl w-full mx-auto px-5 lg:px-0 py-6 mb-8">
+          <div className="grid md:grid-cols-[38%_62%] gap-6">
+            <div className="space-y-6">
+              <Intro />
+              <FileUpload onFileTypeChange={handleFileTypeChange} />
+              <MyFiles
+                setActiveFile={setActiveFile}
+                files={files}
+                fileType={fileType}
+              />
+            </div>
+
+            <div className="min-h-[500px]">
+              <ChatBox activeFile={activeFile} fileType={fileType} />
+            </div>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    </>
+  );
 }

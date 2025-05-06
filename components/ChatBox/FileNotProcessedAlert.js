@@ -1,43 +1,70 @@
-import toast from "react-hot-toast";
 import { useState } from "react";
-
-const PillButton = ({ func, disabled }) => (
-    <button onClick={func}
-        className="ml-2 bg-blue-500 hover:bg-primary-main text-xs text-white font-bold py-1 px-2 rounded-full disabled:bg-primary-light disabled:cursor-not-allowed">
-        {disabled ? "Processing file.." : "Process File"}
-    </button>
-)
+import toast from "react-hot-toast";
+import { FaCog, FaSpinner } from "react-icons/fa";
 
 export default function FileNotProcessedAlert({ id }) {
-    console.log("--id--", id)
-    const [processing, setProcessing] = useState(false)
+  const [processing, setProcessing] = useState(false);
 
-    const trigger = async (id) => {
-        setProcessing(true)
-        let response = await fetch("/api/process", {
-            method: 'POST',
-            body: JSON.stringify({ id }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        })
+  const handleProcess = async () => {
+    setProcessing(true);
+    try {
+      const response = await fetch("/api/process", {
+        method: "POST",
+        body: JSON.stringify({ id }),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
 
-        if (response.ok) {
-            response = await response.json()
-            toast.success(response.message)
-        } else {
-            response = await response.json()
-            toast.error(response.message)
-        }
-        setProcessing(false)
+      if (response.ok) {
+        toast.success("File processing has started. This may take a minute.");
+        setTimeout(() => {
+          window.location.reload();
+        }, 10000);
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || "Failed to process file");
+        setProcessing(false);
+      }
+    } catch (error) {
+      console.error("Processing error:", error);
+      toast.error("An error occurred while processing the file");
+      setProcessing(false);
     }
+  };
 
-    return (
-        <div className="bg-orange-100 border-t-4 border-orange-500 rounded-b text-orange-900 px-4 py-3 shadow-md" role="alert">
-            <p className="font-bold">Process File</p>
-            <p>Please process the file before starting to chat. Click button to process
-                <PillButton func={() => trigger(id)} disabled={processing} />
-            </p>
-        </div>
-    )
+  return (
+    <div className="h-full flex flex-col items-center justify-center text-center p-6">
+      <div className="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mb-4">
+        {processing ? (
+          <FaSpinner className="animate-spin" size={24} />
+        ) : (
+          <FaCog size={24} />
+        )}
+      </div>
+      <h3 className="text-xl font-semibold text-gray-800 mb-2">
+        Document Needs Processing
+      </h3>
+      <p className="text-gray-600 max-w-md mb-6">
+        This document needs to be processed before you can ask questions about
+        it. Processing may take a minute or two.
+      </p>
+      <button
+        onClick={handleProcess}
+        disabled={processing}
+        className={`btn ${
+          processing ? "bg-gray-400 cursor-not-allowed" : "btn-primary"
+        } flex items-center`}
+      >
+        {processing ? (
+          <>
+            <FaSpinner className="animate-spin mr-2" />
+            Processing...
+          </>
+        ) : (
+          "Process Document"
+        )}
+      </button>
+    </div>
+  );
 }
