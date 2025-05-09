@@ -9,7 +9,7 @@ import Head from "next/head";
 import { FaScaleBalanced } from "react-icons/fa6";
 
 export default function Home() {
-  const [activeFile, setActiveFile] = useState();
+  const [activeFile, setActiveFile] = useState(null);
   const [fileType, setFileType] = useState("contract"); // Default to 'contract'
   const { files, isError, isLoading } = useMyFiles();
 
@@ -69,7 +69,7 @@ export default function Home() {
             </div>
 
             <div className="min-h-[500px]">
-              <ChatBox activeFile={activeFile} fileType={fileType} />
+              <ChatBox activeFile={activeFile} fileType={fileType} setActiveFile={setActiveFile} />
             </div>
           </div>
         </main>

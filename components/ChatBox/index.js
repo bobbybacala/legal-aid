@@ -7,7 +7,7 @@ import Chat from "@/components/ChatBox/Chat";
 import FileNotProcessedAlert from "@/components/ChatBox/FileNotProcessedAlert";
 import AnimatedEllipsis from "../AnimatedEllipsis";
 
-export default function ChatBox({ activeFile, fileType }) {
+export default function ChatBox({ activeFile, setActiveFile, fileType }) {
 	const divRef = useRef(null);
 	const [chat, setChat] = useState([]);
 	const [query, setQuery] = useState();
@@ -20,6 +20,12 @@ export default function ChatBox({ activeFile, fileType }) {
 			divRef.current.scrollTop = divRef.current.scrollHeight;
 		}
 	};
+
+	// when filetype is changed, set the active file to null
+	useEffect(() => {
+		setActiveFile(null);
+	}, [fileType])
+
 
 	// clear the chat when the active file changes
 	useEffect(() => {
