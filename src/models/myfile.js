@@ -30,6 +30,29 @@ const MyFileSchema = new Schema({
         unique: true,
         required: false,
     },
+    fileType: {
+        type: String,
+        enum: ['contract', 'legal_case'],
+        required: true,
+    },
+    caseTitle: {
+        type: String,
+        trim: true,
+        maxLength: 500,
+    },
+    judge: {
+        type: String,
+        trim: true,
+        maxLength: 200,
+    },
+    date: {
+        type: Date,
+    },
+    caseType: {
+        type: String,
+        trim: true,
+        maxLength: 100,
+    },
 }, {
     timestamps: true,
 });

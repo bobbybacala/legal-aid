@@ -100,8 +100,33 @@ export default async function handler(req, res) {
         console.log('Starting file upload process...');
 
         // Parse the multipart form data
-        const { files } = await parseFile(req);
+        const { fields, files } = await parseFile(req);
+        console.log('Fields received:', fields);
         console.log('Files received:', files);
+
+        // since formidable parses the files and the fields and wraps them in an array, we have to extract back from the array to string
+        
+        // Extract the first value from arrays
+        const fileType = fields.fileType?.[0];
+        const caseTitle = fields.caseTitle?.[0];
+        const judge = fields.judge?.[0];
+        const date = fields.date?.[0];
+        const caseType = fields.caseType?.[0];
+        
+        if (!fileType || !['contract', 'legal_case'].includes(fileType)) {
+            return res.status(400).json({ error: 'Invalid or missing fileType. Must be "contract" or "legal_case".' });
+        }
+
+        // Validate additional metadata for legal cases
+        if (fileType === 'legal_case') {
+            if (!caseTitle || !judge || !date || !caseType) {
+                return res.status(400).json({
+                    error: 'Missing required metadata for legal cases: caseTitle, judge, date, and caseType are required.',
+                });
+            }
+        }
+
+        console.log('File type:', fileType);
 
         // In newer versions of formidable, files.file is an array
         const file = Array.isArray(files.file) ? files.file[0] : files.file;
@@ -154,7 +179,11 @@ export default async function handler(req, res) {
             console.log('S3 upload response:', s3Response);
 
             // Create Pinecone index
-            const filenameWithoutExt = fileData.name.split('.')[0];
+            let filenameWithoutExt = fileData.name.split('.')[0];
+            if (fileType === 'legal_case') {
+                // replace underscores with spaces for legal case filenames
+                filenameWithoutExt = filenameWithoutExt.replace(/_/g, ' ');
+            }
             const filenameSlug = slugify(filenameWithoutExt, { lower: true, strict: true });
 
             // await pinecone();
@@ -166,6 +195,13 @@ export default async function handler(req, res) {
                 fileName: fileData.name,
                 fileUrl: s3Response.Location,
                 vectorIndex: filenameSlug,
+                fileType,
+                ...(fileType === 'legal_case' && {
+                    caseTitle,
+                    judge,
+                    date: new Date(date), // Ensure date is stored as a Date object
+                    caseType,
+                }),
             });
 
             await myFile.save();
