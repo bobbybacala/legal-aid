@@ -77,46 +77,51 @@ function parseLegalDocument(text) {
 
 // function to parse the contract files
 function parseContractDocument(text) {
-    // First, normalize line endings, spaces and remove extra whitespace
+    // Normalize line endings, multiple spaces and remove extra whitespace
     const normalizedText = text
         .replace(/\r\n/g, '\n')
         .replace(/\n\s*\n/g, '\n')
         .replace(/\s+/g, ' ')  // Normalize multiple spaces to single space
         .trim();
 
-    // Pattern to match numbered clauses (1., 2., etc.)
-    const mainClausePattern = /(?:^|\s)(\d+\.\s*[A-Za-z])/g;
+    // Identify where clauses start — we look for "1." followed by a space and a capital letter or word
+    const clauseStartMatch = normalizedText.match(/(?:^|\s)(1\.\s*[A-Za-z])/);
+    if (!clauseStartMatch || !clauseStartMatch.index) {
+        return [];
+    }
 
-    // Find all clause starting positions
-    const matches = [...normalizedText.matchAll(mainClausePattern)];
+    // Trim everything before the first clause
+    const clausesText = normalizedText.slice(clauseStartMatch.index).trim();
+
+    // Match all top-level clause headings (e.g., 1., 2., 3., etc.)
+    const mainClausePattern = /(?:^|\s)(\d+\.\s*[A-Za-z])/g;
+    const matches = [...clausesText.matchAll(mainClausePattern)];
 
     if (matches.length === 0) {
         return [];
     }
 
-    // Split text into clauses
+    // Split text into clauses using match positions
     const clauses = matches.map((match, index) => {
         const startPos = match.index;
-        const endPos = index < matches.length - 1 ? matches[index + 1].index : normalizedText.length;
+        const endPos = index < matches.length - 1 ? matches[index + 1].index : clausesText.length;
 
-        // Extract the clause text
-        let clauseText = normalizedText.slice(startPos, endPos).trim();
+        // Extract clause text
+        let clauseText = clausesText.slice(startPos, endPos).trim();
 
-        // Clean up the clause text
+        // Clean up formatting
         clauseText = clauseText
-            .replace(/\s+/g, ' ')           // Normalize spaces
-            .replace(/\s+([.,)])/g, '$1')   // Remove spaces before punctuation
-            .replace(/\(\s+/g, '(')         // Remove spaces after opening parentheses
-            .replace(/\s+\)/g, ')')         // Remove spaces before closing parentheses
+            .replace(/\s+/g, ' ')
+            .replace(/\s+([.,)])/g, '$1')
+            .replace(/\(\s+/g, '(')
+            .replace(/\s+\)/g, ')')
             .trim();
 
         return clauseText;
     });
 
-    return clauses.filter(clause => {
-        // Remove any empty clauses or clauses that are just numbers
-        return clause.length > 0 && !/^\d+$/.test(clause);
-    });
+    // Filter out any invalid or empty clause entries
+    return clauses.filter(clause => clause.length > 0 && !/^\d+$/.test(clause));
 }
 
 export default async function handler(req, res) {

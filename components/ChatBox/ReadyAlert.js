@@ -44,6 +44,7 @@ const SummaryReport = ({ summary, onClose }) => {
                         border: 1px solid #ddd;
                         border-radius: 5px;
                         background-color: #f9f9f9;
+                        height: 100%;
                     }
                 </style>
             </head>
@@ -71,7 +72,7 @@ const SummaryReport = ({ summary, onClose }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-white rounded-lg shadow h-auto">
       <div className="p-4 border-b flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold">Summary Report</h2>
@@ -134,7 +135,13 @@ const ComplianceResults = ({ results, onClose }) => {
             <head>
                 <title>Compliance Report</title>
                 <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; }
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        overflow: auto;
+                        font-family: Arial, sans-serif;
+                    }
+                    .all-clauses { height: 100%; }
                     .header { margin-bottom: 20px; }
                     .clause { 
                         margin-bottom: 20px; 
@@ -155,31 +162,33 @@ const ComplianceResults = ({ results, onClose }) => {
                     <h1>Compliance Report</h1>
                     <p>Generated on: ${new Date().toLocaleString()}</p>
                 </div>
-                ${results
-                  .map((result) => {
-                    const getClassName = (analysis) => {
-                      if (analysis.toLowerCase().includes("compliant"))
-                        return "compliant";
-                      if (analysis.toLowerCase().includes("risky"))
-                        return "risky";
-                      if (analysis.toLowerCase().includes("non compliant"))
-                        return "non-compliant";
-                      return "";
-                    };
+                <div class="all-clauses">
+                  ${results
+                    .map((result) => {
+                      const getClassName = (analysis) => {
+                        if (analysis.toLowerCase().includes("compliant"))
+                          return "compliant";
+                        if (analysis.toLowerCase().includes("risky"))
+                          return "risky";
+                        if (analysis.toLowerCase().includes("non compliant"))
+                          return "non-compliant";
+                        return "";
+                      };
 
-                    return `
-                        <div class="clause ${getClassName(result.analysis)}">
-                            <div class="clause-number">Clause ${
-                              result.clauseNumber
-                            }</div>
-                            <div class="clause-text">${result.text}</div>
-                            <div class="analysis">Analysis: ${
-                              result.analysis
-                            }</div>
-                        </div>
-                    `;
-                  })
-                  .join("")}
+                      return `
+                          <div class="clause ${getClassName(result.analysis)}">
+                              <div class="clause-number">Clause ${
+                                result.clauseNumber
+                              }</div>
+                              <div class="clause-text">${result.text}</div>
+                              <div class="analysis">Analysis: ${
+                                result.analysis
+                              }</div>
+                          </div>
+                      `;
+                    })
+                    .join("")}
+                </div>
             </body>
             </html>
         `;
@@ -196,7 +205,7 @@ const ComplianceResults = ({ results, onClose }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-white rounded-lg shadow h-auto">
       <div className="p-4 border-b flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold">Compliance Results</h2>

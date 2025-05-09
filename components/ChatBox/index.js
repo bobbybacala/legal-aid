@@ -135,7 +135,7 @@ export default function ChatBox({ activeFile, setActiveFile, fileType }) {
 			<div className="flex-1 overflow-auto bg-gradient-to-b from-gray-50 to-white">
 				<div
 					className="flex-1 h-full p-4 overflow-y-auto subtle-scroll"
-					// style={{ maxHeight: "calc(100vh - 250px)" }}
+					style={{ maxHeight: "calc(100vh - 55px)", overflowY: "auto"}}
 					ref={divRef}
 				>
 					{activeFile ? (
